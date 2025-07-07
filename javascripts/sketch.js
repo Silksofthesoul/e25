@@ -9,54 +9,60 @@ const gWidth = window.innerWidth;
 const gHeight = window.innerHeight;
 const padd = 50;
 
-let maskLayer = null;
+let maskLayerF = null;
 let font = null;
+const txt = '1:1';
 
 function preload() {
   // font = loadFont('/e24/RobotoSlab-Black.ttf');
 }
 
-const createMask = m => {
-  if(maskLayer) maskLayer.elt.remove();
-  maskLayer = createGraphics(gWidth, gHeight);
-  // maskLayer.background(255);
-  // maskLayer.erase();
-  // maskLayer.textFont(font);
-  maskLayer.textSize(( Math.max( gWidth, gHeight ) / 2 ) - ( padd * 2 ));
-  maskLayer.textAlign(CENTER, CENTER);
-  maskLayer.fill(255);
-  maskLayer.text('1:1', gWidth / 2, ( ( gHeight / 2 ) - ( padd * 2 ) ) + (m?m:0));
-  maskLayer.rotate(45);
-  // maskLayer.noErase();
+const createMaskF = ( m ) => {
+  if(maskLayerF) maskLayerF.elt.remove();
+  maskLayerF = createGraphics(gWidth, gHeight);
+  maskLayerF.textSize(( Math.max( gWidth, gHeight ) / 2 ) - ( padd * 2 ));
+  maskLayerF.textAlign(CENTER, CENTER);
+  maskLayerF.fill(255);
+  maskLayerF.text(txt, gWidth / 2, ( ( gHeight / 2 ) - ( padd * 2 ) ) + (m?m:0));
+  maskLayerF.rotate(45);
+
 };
 
 
 function setup() {
   createCanvas(gWidth, gHeight);
-  createMask(null);
+  createMaskF(null);
 }
 
 const circles = {};
+const cMax = 100;
+
 let p = paletteInit();
 const clone = _ => {
+  let t = setTimeout(_ => {
   const c = new Circle({x: rndInt(0, gWidth), y: rndInt(0, gHeight), radius: 0, p})
   c
     .setDestroy(_ => {
       const i = rndInt(1, 10);
-      for(let j = 0; j < i; j++) if(Object.keys(circles).length < 100) clone();
+      for(let j = 0; j < i; j++) if(Object.keys(circles).length < cMax) clone();
       delete circles[c.id];
     });
-  circles[c.id] = c;
-}
+    circles[c.id] = c;
+    clearTimeout(t);
+
+  }, rndInt(500, 2500));
+} 
+
 
 let rad = rndInt(3, 8);
 const c = clone();
-let angle = 0;
+let angleF = 0;
+
+
 function draw() {
-  if(rndInt(1, 10000) % 3333 === 0) p = paletteInit();
-  angle = radians(rad) * sin(frameCount * 0.01);
+  if(rndInt(1, 10000) % 333 === 0) p = paletteInit();
+  angleF = radians(rad) * sin(frameCount * 0.01);
   background('rgba(255, 255, 255, 0.1)');
-  // if(rndInt(1, 100) % 33 === 0) createMask(rndInt(-50, 50));
   Object.entries(circles)
     .forEach(([key, value]) => {
       value
@@ -64,8 +70,8 @@ function draw() {
         .render()
     });
   push();
-  translate(0, 100);
-  rotate(angle);
-  image(maskLayer, 0, 0);
+    translate(0, 100);
+    rotate(angleF);
+    image(maskLayerF, 0, 0);
   pop();
 }

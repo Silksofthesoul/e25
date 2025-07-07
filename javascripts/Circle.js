@@ -22,6 +22,8 @@
     gHeight     = window.innerHeight;
     destroyFn     = null;
     isDeleted = false;
+    isStopped = false;
+    isAlphaInvert =  rndInt(1, 100) % 33 ?  true : false;
 
 
     constructor(options) {
@@ -48,21 +50,24 @@
       this.radius += this.expandSpeed;
     }
     mutateAlpha() {
-      const alpha = ( 1 - this.radius / this.maxRadius ).toFixed(4);
+      const pAlpha = ( this.radius / this.maxRadius * 100 ).toFixed(4);
+      const alpha = !this.isAlphaInvert ? ( 1 / 100 * pAlpha ) : 1 - ( 1 / 100 * pAlpha );
       this.color = this.color.replace(/rgba\((.+,)(.+,)(.+,)(.+)\)/gim, `rgba($1$2$3 ${alpha})`);
     }
 
     setDestroy (fn) {
-      this.destroy = fn;
+      this.destroyFn = fn;
       return this;
     }
     destroy () {
       this.isDeleted = true;
+      this.isStopped = true;
       this.destroyFn();
     }
 
     expand() {
-      if(this.isDeleted) return null;
+      if(this.isStopped) return this;
+      if(this.isDeleted) return this;
       this.mutateSpeed();
       this.mutateRadius();
       this.mutateAlpha();
@@ -71,7 +76,8 @@
     }
 
     render () {
-      if(this.isDeleted) return null;
+      if(this.isStopped) return this;
+      if(this.isDeleted) return this;
       stroke(this.color);
       fill(this.color);
       circle(this.x, this.y, this.diametr);
