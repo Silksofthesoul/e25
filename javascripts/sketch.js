@@ -14,12 +14,13 @@ let font = null;
 const txt = '1:1';
 
 function preload() {
-  // font = loadFont('/e24/RobotoSlab-Black.ttf');
+  font = loadFont('/e25/AutourOne-Regular.ttf');
 }
 
 const createMaskF = ( m ) => {
   if(maskLayerF) maskLayerF.elt.remove();
   maskLayerF = createGraphics(gWidth, gHeight);
+  maskLayerF.textFont(font);
   maskLayerF.textSize(( Math.max( gWidth, gHeight ) / 2 ) - ( padd * 2 ));
   maskLayerF.textAlign(CENTER, CENTER);
   maskLayerF.fill(255);
