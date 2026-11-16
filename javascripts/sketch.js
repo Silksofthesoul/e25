@@ -14,7 +14,7 @@ let font = null;
 const txt = '1:1';
 
 function preload() {
-  font = loadFont('/e25/AutourOne-Regular.ttf');
+  font = loadFont('./fonts/AutourOne-Regular.ttf');
 }
 
 const createMaskF = ( m ) => {
